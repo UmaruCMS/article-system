@@ -30,8 +30,16 @@
   branch = "master"
 
 [[constraint]]
+  name = "github.com/go-sql-driver/mysql"
+  branch = "master"
+
+[[constraint]]
   name = "github.com/jinzhu/gorm"
   version = "1.9.1"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/sony/sonyflake"
 
 [prune]
   go-tests = true

@@ -1,7 +1,21 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/UmaruCMS/article-system/config"
+	"github.com/UmaruCMS/article-system/model"
+)
+
+func release() {
+	config.Release()
+}
 
 func main() {
-	fmt.Println("Hello World!")
+	defer release()
+	article, err := model.NewArticle("测试文章", &model.Author{
+		Name:   "Lawrence",
+		UserID: 1,
+	}, "<p>Test Content</p>")
+	fmt.Println(article, err)
 }

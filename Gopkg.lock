@@ -19,6 +19,12 @@
   revision = "bf7803815b0baa22ff7a10457932882dfbf09925"
 
 [[projects]]
+  name = "github.com/go-sql-driver/mysql"
+  packages = ["."]
+  revision = "a0583e0143b1624142adab07e0e97fe106d99561"
+  version = "v1.3"
+
+[[projects]]
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
@@ -61,6 +67,12 @@
   version = "1.0.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/sony/sonyflake"
+  packages = ["."]
+  revision = "fa881fb1052b152e977c41023052c2f2a1c475e9"
+
+[[projects]]
   name = "github.com/ugorji/go"
   packages = ["codec"]
   revision = "b4c50a2b199d93b13dc15e78929cfb23bfdf21ab"
@@ -87,6 +99,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f8cb32354e00c8d0fbb6d4790a212b50c41bfcebb23eafec43cdcb9fba844c7f"
+  inputs-digest = "d0c3883bf33810db71cadf8269619c9ea4afa35419390e030211058942e26682"
   solver-name = "gps-cdcl"
   solver-version = 1

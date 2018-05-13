@@ -17,4 +17,7 @@ func main() {
 		UserID: 1,
 	}, "<p>Test Content</p>")
 	fmt.Println(article, err)
+	existedArticle := &model.Article{}
+	existedArticle.GetByUID(article.UID)
+	existedArticle.UpdateContent("<p>New Content</p>")
 }

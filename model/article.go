@@ -11,9 +11,9 @@ import (
 
 type Article struct {
 	gorm.Model
-	UID        uint64 `gorm:"unique_key"`
-	Title      string
-	AuthorID   uint
+	UID      uint64 `gorm:"unique_key"`
+	Title    string
+	AuthorID uint
 }
 
 func NewArticle(title string, author *Author, content string) (*Article, error) {
@@ -28,9 +28,9 @@ func NewArticle(title string, author *Author, content string) (*Article, error) 
 	}
 	defer file.Close()
 	article := &Article{
-		UID:        uid,
-		Title:      title,
-		AuthorID:   author.UserID,
+		UID:      uid,
+		Title:    title,
+		AuthorID: author.UserID,
 	}
 	_, err = io.WriteString(file, content)
 	if err != nil {
@@ -86,6 +86,29 @@ func (article *Article) GetByUID(uid uint64) (*Article, error) {
 	return article, nil
 }
 
+func (article *Article) UpdateContent(content string) error {
+	prevContent, err := article.Content()
+	if err != nil {
+		return err
+	}
+	filePath := article.GetContentPath()
+	file, err := os.Open(filePath)
+	defer file.Close()
+	if err != nil {
+		return err
+	}
+	err = file.Truncate(0)
+	if err != nil {
+		return err
+	}
+	_, err = io.WriteString(file, content)
+	if err != nil {
+		io.WriteString(file, prevContent)
+		return err
+	}
+	return nil
+}
+
 func (article *Article) Delete(permanently bool) error {
 	db := config.Database
 	if permanently {
@@ -93,5 +116,3 @@ func (article *Article) Delete(permanently bool) error {
 	}
 	return db.Unscoped().Delete(article).Error
 }
-
-func (article *Article) 

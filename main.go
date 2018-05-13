@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/UmaruCMS/article-system/config"
+	"github.com/UmaruCMS/article-system/http/router"
 	"github.com/UmaruCMS/article-system/model"
 )
 
@@ -13,6 +14,7 @@ func release() {
 
 func main() {
 	defer release()
+
 	article, err := model.NewArticle("测试文章", &model.Author{
 		UserID: 1,
 	}, "<p>Test Content</p>")
@@ -20,4 +22,8 @@ func main() {
 	existedArticle := &model.Article{}
 	existedArticle.GetByUID(article.UID)
 	existedArticle.UpdateContent("<p>New Content</p>")
+
+	r := router.DefaultRouter()
+	router.RegisterHandlers(r)
+	r.Run(":2335")
 }

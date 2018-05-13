@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 
 	"github.com/UmaruCMS/article-system/config"
@@ -62,20 +63,11 @@ func (article *Article) Content() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	buf := make([]byte, 1024)
-	chunks := make([]byte, 1024, 1024)
-
-	for {
-		n, err := file.Read(buf)
-		if err != nil && err != io.EOF {
-			return "", err
-		}
-		if n == 0 {
-			break
-		}
-		chunks = append(chunks, buf[:n]...)
+	fileBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		return "", err
 	}
-	return string(chunks), nil
+	return string(fileBytes), nil
 }
 
 func (article *Article) GetByUID(uid uint64) (*Article, error) {

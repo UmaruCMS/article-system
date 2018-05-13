@@ -14,7 +14,6 @@ func release() {
 func main() {
 	defer release()
 	article, err := model.NewArticle("测试文章", &model.Author{
-		Name:   "Lawrence",
 		UserID: 1,
 	}, "<p>Test Content</p>")
 	fmt.Println(article, err)

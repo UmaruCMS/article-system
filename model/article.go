@@ -13,7 +13,6 @@ type Article struct {
 	gorm.Model
 	UID        uint64 `gorm:"unique_key"`
 	Title      string
-	AuthorName string
 	AuthorID   uint
 }
 
@@ -31,7 +30,6 @@ func NewArticle(title string, author *Author, content string) (*Article, error) 
 	article := &Article{
 		UID:        uid,
 		Title:      title,
-		AuthorName: author.Name,
 		AuthorID:   author.UserID,
 	}
 	_, err = io.WriteString(file, content)
@@ -95,3 +93,5 @@ func (article *Article) Delete(permanently bool) error {
 	}
 	return db.Unscoped().Delete(article).Error
 }
+
+func (article *Article) 

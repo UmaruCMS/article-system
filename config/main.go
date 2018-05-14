@@ -6,14 +6,19 @@ import (
 	"os"
 
 	"github.com/sony/sonyflake"
+	"google.golang.org/grpc"
 	// MySQL database driver
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+
+	"github.com/UmaruCMS/article-system/rpc/client/auth"
+	"github.com/UmaruCMS/article-system/rpc/client/user"
 )
 
 type config struct {
 	MySQLAddr string `json:"mysql_addr"`
 	RootPath  string `json:"root_path"`
+	GRPCAddr  string `json:"grpc_addr"`
 }
 
 // Database Instance
@@ -24,6 +29,13 @@ var RootPath = ""
 
 // UIDGenerator generates UID
 var UIDGenerator *sonyflake.Sonyflake
+
+// RPC Clients
+var RPC = &struct {
+	conn       *grpc.ClientConn
+	AuthClient auth.AuthClient
+	UserClient user.UserClient
+}{}
 
 func initDatabase(cfg *config) {
 	var err error
@@ -57,6 +69,16 @@ func initUIDGenerator() {
 	UIDGenerator = sonyflake.NewSonyflake(sonyflake.Settings{})
 }
 
+func initRPCClients(cfg *config) {
+	conn, err := grpc.Dial(cfg.GRPCAddr, grpc.WithInsecure())
+	if err != nil {
+		panic(err.Error())
+	}
+	RPC.conn = conn
+	RPC.AuthClient = auth.NewAuthClient(conn)
+	RPC.UserClient = user.NewUserClient(conn)
+}
+
 func getConfig() *config {
 	raw, err := ioutil.ReadFile("./config.json")
 	if err != nil {
@@ -72,11 +94,15 @@ func init() {
 	initDatabase(cfg)
 	initDataFolder(cfg)
 	initUIDGenerator()
+	initRPCClients(cfg)
 }
 
 // Release all resources
 func Release() {
 	if Database != nil {
 		Database.Close()
+	}
+	if RPC.conn != nil {
+		RPC.conn.Close()
 	}
 }

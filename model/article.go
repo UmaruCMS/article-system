@@ -78,13 +78,23 @@ func (article *Article) GetByUID(uid uint64) (*Article, error) {
 	return article, nil
 }
 
+func (article *Article) UpdateTitle(title string) error {
+	db := config.Database
+	err := db.Model(article).Where("uid = ?", article.UID).Update("title", title).Error
+	if err != nil {
+		return err
+	}
+	article.Title = title
+	return nil
+}
+
 func (article *Article) UpdateContent(content string) error {
 	prevContent, err := article.Content()
 	if err != nil {
 		return err
 	}
 	filePath := article.GetContentPath()
-	file, err := os.Open(filePath)
+	file, err := os.OpenFile(filePath, os.O_RDWR, 0755)
 	defer file.Close()
 	if err != nil {
 		return err
